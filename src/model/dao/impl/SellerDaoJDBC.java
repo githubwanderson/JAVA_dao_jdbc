@@ -58,19 +58,9 @@ public class SellerDaoJDBC implements SellerDao{
 			if(rs.next()) {
 				
 				// Crio um obj department
-				Department dep = new Department();
-				dep.setId(rs.getInt("DepartmentId"));
-				dep.setName(rs.getString("DepName"));
-				
-				// Crio um obj seller e add o obj department
-				Seller seller = new Seller();
-				seller.setId(rs.getInt("Id"));
-				seller.setName(rs.getString("Name"));
-				seller.setEmail(rs.getString("Email"));
-				seller.setBirthDate(rs.getDate("BirthDate"));
-				seller.setBaseSalary(rs.getDouble("BaseSalary"));		
-				seller.setDepartment(dep);
-				
+				Department dep = instantiateDepartment(rs);				
+				// Crio um obj seller ja com obj department
+				Seller seller = instantiateSeller(rs,dep);				
 				return seller;
 				
 			}
@@ -83,6 +73,37 @@ public class SellerDaoJDBC implements SellerDao{
 			DB.closeStatement(st);
 			DB.closeResultSet(rs);
 		}
+	}
+
+	/**
+	 * Método auxiliar findById
+	 * @param ResultSet rs
+	 * @param Department dep
+	 * @return Seller obj
+	 * @throws SQLException 
+	 */
+	private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {
+		Seller seller = new Seller();
+		seller.setId(rs.getInt("Id"));
+		seller.setName(rs.getString("Name"));
+		seller.setEmail(rs.getString("Email"));
+		seller.setBirthDate(rs.getDate("BirthDate"));
+		seller.setBaseSalary(rs.getDouble("BaseSalary"));		
+		seller.setDepartment(dep);
+		return seller;
+	}
+
+	/**
+	 * Método auxiliar findById
+	 * @param ResultSet rs
+	 * @return Department obj
+	 * @throws SQLException 
+	 */
+	private Department instantiateDepartment(ResultSet rs) throws SQLException {
+		Department dep = new Department();
+		dep.setId(rs.getInt("DepartmentId"));
+		dep.setName(rs.getString("DepName"));
+		return dep;
 	}
 
 	@Override
