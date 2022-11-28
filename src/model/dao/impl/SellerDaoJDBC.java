@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import db.DB;
 import db.DbException;
 import model.dao.SellerDao;
@@ -24,8 +26,48 @@ public class SellerDaoJDBC implements SellerDao{
 
 	@Override
 	public void insert(Seller obj) {
-		// TODO Auto-generated method stub
 		
+		PreparedStatement st = null;
+		
+		try {
+			
+			String sql =
+					"INSERT INTO seller (Name, Email, BirthDate, BaseSalary, DepartmentId)"
+					+ "VALUES"
+					+ "(?,?,?,?,?)";
+			
+			st = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			
+			st.setString(1, obj.getName());
+			st.setString(2, obj.getEmail());
+			// Instanciar uma data do SQL
+			st.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+			st.setDouble(4, obj.getBaseSalary());
+			st.setInt(5, obj.getDepartment().getId());	
+			
+			int rowsAffected = st.executeUpdate();
+			
+			// Se houver linhas afetadas então o registro foi inserido com sucesso
+			if(rowsAffected > 0) {
+				// Pego a tabela de retorno que contem os ids inseridos
+				// Como sera inserido apenas um, entao pego a linha 1
+				ResultSet rs = st.getGeneratedKeys();
+				if(rs.next()) {
+					int id = rs.getInt(1);
+					obj.setId(id);
+				}
+				else {
+					throw new DbException("Erro: Nenhuma linha foi alterada.");
+				}
+				DB.closeResultSet(rs);					
+			}
+		}
+		catch(SQLException e) {
+			throw new DbException("Error: " + e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
