@@ -30,7 +30,7 @@ public class Program {
 		
 		System.out.println("\n=== TEST 4: seller insert ===");
 		Seller newSeller = new Seller(null,"Joâo Mauro","jm@gmail.com", new Date(), 4505.60, department); 
-//		sellerDao.insert(newSeller);
+		sellerDao.insert(newSeller);
 		System.out.println(newSeller);
 		
 		System.out.println("\n=== TEST 5: seller update ===");
@@ -42,10 +42,8 @@ public class Program {
 		System.out.println(seller);
 		
 		System.out.println("\n=== TEST 6: seller delete ===");
-		for (int i = 11; i <= 16 ; i++) {
-			sellerDao.deleteById(i);
-			System.out.println("Deletado com sucesso! Id: " + i);
-		}
+		sellerDao.deleteById(11);
+		System.out.println("Deletado com sucesso!");
 		
 		
 	}
