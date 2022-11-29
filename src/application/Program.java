@@ -32,6 +32,13 @@ public class Program {
 		sellerDao.insert(newSeller);
 		System.out.println(newSeller);
 		
+		System.out.println("\n=== TEST 5: seller update ===");
+		seller = sellerDao.findById(7);
+		department = new Department(1,null);
+		seller.setBaseSalary(9500.50);
+		seller.setDepartment(department);
+		sellerDao.update(seller);
+		System.out.println(seller);
 		
 	}
 
