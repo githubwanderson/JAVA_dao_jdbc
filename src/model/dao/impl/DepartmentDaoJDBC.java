@@ -26,7 +26,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		
 		try {
 			
-			String sql = "INSERT INTO department (Name) VALUES (?)";			
+			String sql = "INSERT INTO Department (Name) VALUES (?)";			
 			
 			st = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);			
 
@@ -36,7 +36,10 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 			
 			if( affectedRows > 0 ) {				
 				ResultSet rs = st.getGeneratedKeys();
-				obj.setId(rs.getInt(1));				
+				// Se a proxima linha não for nulo
+				if(rs.next()) {
+					obj.setId(rs.getInt(1));	
+				}			
 				DB.closeResultSet(rs);
 			}
 			else {				
