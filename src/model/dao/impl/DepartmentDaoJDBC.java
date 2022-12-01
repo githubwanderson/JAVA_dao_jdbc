@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import db.DB;
 import db.DbException;
@@ -57,7 +58,29 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
 	@Override
 	public void update(Department obj) {
-		// TODO Auto-generated method stub
+		
+		PreparedStatement st = null;
+		
+		try {
+			
+			String sql = "UPDATE department "
+					+ "SET Name = ? "
+					+ "WHERE Id = ?";
+			
+			st = conn.prepareStatement(sql);
+			
+			st.setString(1, obj.getName());
+			st.setInt(2, obj.getId());
+			
+			st.executeUpdate();			
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
+		
 		
 	}
 
@@ -69,14 +92,93 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
 	@Override
 	public Department findById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		PreparedStatement st = null;
+		ResultSet rs = null; 
+		
+		try {
+			
+			String sql = "SELECT * FROM department "
+					+ "WHERE Id = ?";
+			
+			st = conn.prepareStatement(sql);
+			
+			st.setInt(1, id);	
+					
+			rs = st.executeQuery();
+						
+			if(rs.next()) {				
+				Department dept = new Department();				
+				dept.setId( rs.getInt("Id") );
+				dept.setName( rs.getString("Name") );				
+				return dept;				
+			}	
+			
+			return null;
+		}
+		catch(SQLException e) {
+			throw new DbException("Update error: " + e.getMessage() );
+		}
+		finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);			
+		}
+		
 	}
 
 	@Override
 	public List<Department> findAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		try {
+			
+			String sql = "SELECT * FROM department";
+			
+			st = conn.prepareStatement(sql);
+			
+			
+			
+			rs = st.executeQuery();
+			
+			List<Department> dpto = new ArrayList<>();
+			
+			while(rs.next()) {	
+				Department newDpto = new Department();
+				newDpto.setId( rs.getInt("Id"));
+				newDpto.setName( rs.getString("Name") );				
+				dpto.add(newDpto);					
+			}			
+			return dpto;			
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);
+		}		
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

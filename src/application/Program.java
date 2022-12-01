@@ -2,7 +2,6 @@ package application;
 
 import java.util.Date;
 import java.util.List;
-
 import model.dao.DaoFactory;
 import model.dao.SellerDao;
 import model.entities.Department;
