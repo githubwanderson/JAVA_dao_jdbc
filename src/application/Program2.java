@@ -31,6 +31,10 @@ public class Program2 {
 		List<Department> listDpto = new ArrayList<>();
 		listDpto = departmentDao.findAll();
 		listDpto.forEach(System.out::println);
+		
+		System.out.println("---- DELETE ----");
+		departmentDao.deleteById(7);
+		System.out.println("Deleted success!");
 
 	}
 

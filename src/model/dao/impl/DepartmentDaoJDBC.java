@@ -86,7 +86,31 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
 	@Override
 	public void deleteById(Integer id) {
-		// TODO Auto-generated method stub
+
+		PreparedStatement st = null;
+		
+		try {
+			
+			String sql = "DELETE FROM department "
+					+ "WHERE Id = ?";
+			
+			st = conn.prepareStatement(sql);
+			
+			st.setInt(1, id);
+			
+			int rowAffected = st.executeUpdate();
+			
+			if(rowAffected==0) {
+				throw new DbException("Id não encontrado. Registro não excluido.");
+			}			
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
+		
 		
 	}
 
@@ -138,9 +162,9 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 			
 			st = conn.prepareStatement(sql);
 			
+			st.executeQuery();
 			
-			
-			rs = st.executeQuery();
+			rs = st.getResultSet();
 			
 			List<Department> dpto = new ArrayList<>();
 			
